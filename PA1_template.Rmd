@@ -1,6 +1,5 @@
 ---
 title: "PA1_template.Rmd"
-author: "Chigo Chimoyo"
 date: "2023-05-25"
 output:
   pdf_document: default
