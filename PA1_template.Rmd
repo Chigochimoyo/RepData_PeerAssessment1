@@ -1,25 +1,221 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "PA1_template.Rmd"
+author: "Chigo Chimoyo"
+date: "2023-05-25"
+output: html_document
 ---
 
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+# Loading packages 
+
+library(tidyverse)
+
+library(xtable)
+
+library(knitr)
+
+```
 
 ## Loading and preprocessing the data
 
+The code below unzips the data file, loads it in R and thereafter changes the class of the date column into a date class
+
+```{r Loading and preprocessing the data}
 
 
-## What is mean total number of steps taken per day?
+unzip("activity.zip")
+
+data <- read.csv("activity.csv")
+
+data <- transform(data, date = as.Date(data$date))
+
+
+```
+
+## Mean and Total number of steps taken per day
+
+The table below presents the total number of steps taken per each day First 5 rows of the table
+
+```{r steps_per_day, echo= FALSE }
+
+step_day <-  data %>%  
+                group_by(date) %>% 
+                summarise(steps = sum(steps, na.rm = TRUE))
+
+kable(head(step_day), format = "simple", table.attr = "style = 'width:50%;'")
+
+
+```
+
+The histogram below presents the total number of steps taken on each day
+
+```{r histogram of steps per day,  echo = TRUE, fig.height = 4, fig.width = 5}
+ 
+  ggplot(step_day, aes(steps)) +
+     geom_histogram(fill = "darkred")+
+     labs(title = "Total number of steps per day",
+              y = "Count of steps",
+              x = "Steps") +
+     theme_classic()
+```
+
+The mean and median of the total number of steps taken per day
+
+```{r mean, median, total number of steps, echo = TRUE}
+
+table <- matrix(NA, ncol = 2, nrow =  2)
+
+colnames(table) <- c("Computation", "Value")
+
+  table[1, ] <- c("Mean", mean(step_day$steps, na.rm = TRUE))
+  table[2, ] <- c("Median", median(step_day$steps, na.rm = TRUE))
+
+kable(table, format = "simple", table.attr = "style = 'width:50%;'")
+
+```
+
+```{r}
+
+ mean_median <-  data %>% 
+                      group_by(date) %>% 
+                      summarise( mean = mean(steps, na.rm = TRUE),
+                                   median = median(steps, na.rm = TRUE))
+
+  kable(head(mean_median), format = "simple")
+
+```
+
+## Average daily activity pattern
+
+Time series plot of 5 minute intervals and average numbers of steps taken, averaged across all days.
+
+```{r Average daily activity patter, echo = TRUE, fig.height = 4, fig.width = 5}
+
+   temp <- aggregate(data$steps ~ data$interval, FUN = mean)
+ 
+   colnames(temp) <- c("interval", "avg_steps")
+  
+    y  <-  max(temp$avg_steps)
+    
+    x <- temp[temp$avg_steps == max(temp$avg_steps),1]
 
 
 
-## What is the average daily activity pattern?
+  data %>% 
+      group_by(interval) %>% 
+      summarise(average = mean(steps, na.rm = TRUE)) %>% 
+      ggplot(aes(interval, average))+
+          geom_line()+
+          labs( title =  "Average daily activity pattern",
+                x =  "5 min intervals",
+                y =  "Average steps daily")+
+          theme_classic() +
+          geom_point(aes(x,y), cex = 5, color = "darkred")
 
 
+```
+
+The red point on the chart indicates the max average steps on `r x` min intervals
 
 ## Imputing missing values
 
+```{r Missing Variables, echo = TRUE}
+
+rows_with_NAs <- sum(!complete.cases(data))
+
+```
+
+The data set has a total of `r rows_with_NAs` missing variables.
+
+These missing variables are replaced by the average number of steps taken in time interval across all days using the code below.
+
+A new dataset named data2 is created with all the missing values filled.
+
+```{r replacing missing varibles, echo = TRUE}
+
+daily_pattern <- data %>% 
+                    group_by(interval) %>% 
+                    summarise(average = mean(steps, na.rm = TRUE))
+
+match <- daily_pattern$average[match(data$interval, daily_pattern$interval)]
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+data2 <- transform(data,
+                 steps = ifelse(is.na(data$steps),
+                            yes = match,
+                            no = data$steps))
+```
+
+Below is a histogram of the total number of steps taken each day.
+
+```{r histogram of steps taken eachday, echo=TRUE, fig.show = 'hold', out.width = '48%'}
+
+data2 %>% 
+  group_by(date) %>% 
+  summarize(total_steps = sum(steps),
+            average_steps = mean(steps),
+            median_steps = median(steps)) %>% 
+  ggplot(aes(total_steps))+
+      geom_histogram(fill = "darkred")+
+      labs( title =  "Plot 2; Total number of steps taken each day",
+                x =  "Steps freqency",
+                y =  "Steps count")+
+      theme_classic()
+
+
+ 
+ggplot(step_day, aes(steps)) +
+   geom_histogram(fill = "darkred")+
+   labs(title = "Plor 1; Total number of steps per day",
+            y = "Count of steps",
+            x = "Steps") +
+   theme_classic()
+
+```
+
+Plot 2, on the left side shows the total number of steps after inputting the missing variables. whilst plot 1, on the right show the total number of steps per day with the missing the variables.
+
+As you may see, imputting the missing variables has changed the outlook of the graph.
+
+## Difference in activity pattern between weekday and weekends
+
+Code below creates a new factor variable that indicates whether the day is a weekday or a weekend.
+
+```{r Week_day_end, echo = TRUE}
+
+days_table <- data.frame(day = c("Monday", "Tuesday", "Wednesday", 
+                                  "Thursday", "Friday", "Saturday", "Sunday"),
+                          mid_end = c("Weekday","Weekday","Weekday","Weekday","Weekday", 
+                                 "Weekend", "Weekend"))
+
+data3 <- transform(data2, day = weekdays(date))
+
+day_end <- as.factor(days_table$mid_end[(match(data3$day, days_table$day))])
+
+data3 <- cbind(data3, day_end)
+
+kable(head(data3), format = "simple")
+
+
+```
+
+Panel plot of a time series plot of the 5 minute interval and average number of steps taken, averaged across all weekday days and weekend days.
+
+```{r time series plot, echo = TRUE, fig.width = 5}
+
+data3 %>% 
+  group_by(day_end, interval) %>% 
+  summarise(avg = mean(steps)) %>% 
+  ggplot(aes(interval, avg))+
+      geom_line()+
+      labs( title =  "Time series plot",
+                x =  "5 minute interval",
+                y =  "Average number of steps")+
+      facet_wrap(.~ day_end, nrow = 2) +
+      theme(panel.background = element_rect(fill='transparent'))
+
+
+```
