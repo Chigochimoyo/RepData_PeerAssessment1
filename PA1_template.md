@@ -114,9 +114,9 @@ Time series plot of 5 minute intervals and average numbers of steps taken, avera
     y  <-  max(temp$avg_steps)
     
     x <- temp[temp$avg_steps == max(temp$avg_steps),1]
+```
 
-
-
+```r
   data %>% 
       group_by(interval) %>% 
       summarise(average = mean(steps, na.rm = TRUE)) %>% 
@@ -129,7 +129,7 @@ Time series plot of 5 minute intervals and average numbers of steps taken, avera
           geom_point(aes(x,y), cex = 5, color = "darkred")
 ```
 
-![plot of chunk Average daily activity patter](Figs/Average daily activity patter-1.png)
+![plot of chunk graph](Figs/graph-1.png)
 
 The red point on the chart indicates the max average steps on 835 min intervals
 
