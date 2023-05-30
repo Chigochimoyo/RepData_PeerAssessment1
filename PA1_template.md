@@ -41,6 +41,8 @@ date          steps
 2012-10-05    13294
 2012-10-06    15420
 
+
+
 The histogram below presents the total number of steps taken on each day
 
 
@@ -57,7 +59,7 @@ The histogram below presents the total number of steps taken on each day
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![plot of chunk histogram of steps per day](Figs/histogram of steps per day-1.png)
+![plot of chunk histogram](Figs/histogram-1.png)
 
 The mean and median of the total number of steps taken per day.
 
@@ -87,7 +89,7 @@ Median        10395
                       summarise( mean = mean(steps, na.rm = TRUE),
                                    median = median(steps, na.rm = TRUE))
 
-  kable(head(mean_median), format = "simple")
+ kable(head(mean_median), format = "simple")
 ```
 
 
@@ -100,6 +102,9 @@ date              mean   median
 2012-10-04    42.06944        0
 2012-10-05    46.15972        0
 2012-10-06    53.54167        0
+
+
+
 
 ## Average daily activity pattern
 
@@ -230,6 +235,7 @@ kable(head(data3), format = "simple")
  0.0754717  2012-10-01          20  Monday   Weekday 
  2.0943396  2012-10-01          25  Monday   Weekday 
 
+
 Panel plot of a time series plot of the 5 minute interval and average number of steps taken, averaged across all weekday days and weekend days.
 
 
@@ -250,4 +256,4 @@ data3 %>%
 ## `summarise()` has grouped output by 'day_end'. You can override using the `.groups` argument.
 ```
 
-![plot of chunk time series plot](Figs/time series plot-1.png)
+![plot of chunk time_plot](Figs/time_plot-1.png)

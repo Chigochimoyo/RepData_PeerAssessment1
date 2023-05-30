@@ -53,14 +53,17 @@ step_day <-  data %>%
                 group_by(date) %>% 
                 summarise(steps = sum(steps, na.rm = TRUE))
 
-kable(head(step_day), format = "simple", table.attr = "style = 'width:50%;'")
+kable(head(step_day), format = "simple")
+
 
 
 ```
 
+
+
 The histogram below presents the total number of steps taken on each day
 
-```{r histogram of steps per day,  echo = TRUE, fig.height = 4, fig.width = 5, fig.show = 'hold'}
+```{r histogram,  echo = TRUE, fig.height = 4, fig.width = 5, fig.show = 'hold'}
  
   ggplot(step_day, aes(steps)) +
      geom_histogram(fill = "darkred")+
@@ -92,9 +95,13 @@ kable(table, format = "simple", table.attr = "style = 'width:50%;'")
                       summarise( mean = mean(steps, na.rm = TRUE),
                                    median = median(steps, na.rm = TRUE))
 
-  kable(head(mean_median), format = "simple")
+ kable(head(mean_median), format = "simple")
+
 
 ```
+
+
+
 
 ## Average daily activity pattern
 
@@ -109,9 +116,6 @@ Time series plot of 5 minute intervals and average numbers of steps taken, avera
     y  <-  max(temp$avg_steps)
     
     x <- temp[temp$avg_steps == max(temp$avg_steps),1]
-
-
-
 
 
 ```
@@ -213,9 +217,10 @@ kable(head(data3), format = "simple")
 
 ```
 
+
 Panel plot of a time series plot of the 5 minute interval and average number of steps taken, averaged across all weekday days and weekend days.
 
-```{r time series plot, echo = TRUE, fig.width = 5, fig.show = 'hold'}
+```{r time_plot, echo = TRUE, fig.width = 5, fig.show = 'hold'}
 
 data3 %>% 
   group_by(day_end, interval) %>% 
@@ -227,7 +232,6 @@ data3 %>%
                 y =  "Average number of stes")+
       facet_wrap(.~ day_end, nrow = 2) +
       theme(panel.background = element_rect(fill='transparent'))
-
 
 
 ```
