@@ -51,7 +51,7 @@ The histogram below presents the total number of steps taken on each day
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![plot of chunk histogram of steps per day](figure/histogram of steps per day-1.png)
+![plot of chunk histogram of steps per day](Figs/histogram of steps per day-1.png)
 
 The mean and median of the total number of steps taken per day
 
@@ -123,7 +123,7 @@ Time series plot of 5 minute intervals and average numbers of steps taken, avera
           geom_point(aes(x,y), cex = 5, color = "darkred")
 ```
 
-![plot of chunk Average daily activity patter](figure/Average daily activity patter-1.png)
+![plot of chunk Average daily activity patter](Figs/Average daily activity patter-1.png)
 
 The red point on the chart indicates the max average steps on 835 min intervals
 
@@ -189,7 +189,7 @@ ggplot(step_day, aes(steps)) +
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-<img src="figure/histogram of steps taken eachday-1.png" alt="plot of chunk histogram of steps taken eachday" width="48%" /><img src="figure/histogram of steps taken eachday-2.png" alt="plot of chunk histogram of steps taken eachday" width="48%" />
+<img src="Figs/histogram of steps taken eachday-1.png" alt="plot of chunk histogram of steps taken eachday" width="48%" /><img src="Figs/histogram of steps taken eachday-2.png" alt="plot of chunk histogram of steps taken eachday" width="48%" />
 
 Plot 2, on the left side shows the total number of steps after inputting the missing variables. whilst plot 1, on the right show the total number of steps per day with the missing the variables.
 
@@ -244,4 +244,4 @@ data3 %>%
 ## `summarise()` has grouped output by 'day_end'. You can override using the `.groups` argument.
 ```
 
-![plot of chunk time series plot](figure/time series plot-1.png)
+![plot of chunk time series plot](Figs/time series plot-1.png)
