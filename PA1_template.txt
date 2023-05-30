@@ -6,55 +6,39 @@ output:
   pdf_document: default
 ---
 
-```{r setup, include = FALSE}
 
-knitr::opts_chunk$set(echo = TRUE)
-
-# Loading packages 
-
-library(tidyverse)
-
-library(xtable)
-
-library(knitr)
-
-```
 
 ## Loading and preprocessing the data
 
 The code below unzips the data file, loads it in R and thereafter changes the class of the date column into a date class
 
-```{r Loading and preprocessing the data}
 
-
+```r
 unzip("activity.zip")
 
 data <- read.csv("activity.csv")
 
 data <- transform(data, date = as.Date(data$date))
-
-
 ```
 
 ## Mean and Total number of steps taken per day
 
 The table below presents the total number of steps taken per each day First 5 rows of the table
 
-```{r steps_per_day, echo= FALSE }
 
-step_day <-  data %>%  
-                group_by(date) %>% 
-                summarise(steps = sum(steps, na.rm = TRUE))
-
-kable(head(step_day), format = "simple", table.attr = "style = 'width:50%;'")
-
-
-```
+date          steps
+-----------  ------
+2012-10-01        0
+2012-10-02      126
+2012-10-03    11352
+2012-10-04    12116
+2012-10-05    13294
+2012-10-06    15420
 
 The histogram below presents the total number of steps taken on each day
 
-```{r histogram of steps per day,  echo = TRUE, fig.height = 4, fig.width = 5}
- 
+
+```r
   ggplot(step_day, aes(steps)) +
      geom_histogram(fill = "darkred")+
      labs(title = "Total number of steps per day",
@@ -63,10 +47,16 @@ The histogram below presents the total number of steps taken on each day
      theme_classic()
 ```
 
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![plot of chunk histogram of steps per day](figure/histogram of steps per day-1.png)
+
 The mean and median of the total number of steps taken per day
 
-```{r mean, median, total number of steps, echo = TRUE}
 
+```r
 table <- matrix(NA, ncol = 2, nrow =  2)
 
 colnames(table) <- c("Computation", "Value")
@@ -75,26 +65,42 @@ colnames(table) <- c("Computation", "Value")
   table[2, ] <- c("Median", median(step_day$steps, na.rm = TRUE))
 
 kable(table, format = "simple", table.attr = "style = 'width:50%;'")
-
 ```
 
-```{r}
 
+
+Computation   Value            
+------------  -----------------
+Mean          9354.22950819672 
+Median        10395            
+
+
+```r
  mean_median <-  data %>% 
                       group_by(date) %>% 
                       summarise( mean = mean(steps, na.rm = TRUE),
                                    median = median(steps, na.rm = TRUE))
 
   kable(head(mean_median), format = "simple")
-
 ```
+
+
+
+date              mean   median
+-----------  ---------  -------
+2012-10-01         NaN       NA
+2012-10-02     0.43750        0
+2012-10-03    39.41667        0
+2012-10-04    42.06944        0
+2012-10-05    46.15972        0
+2012-10-06    53.54167        0
 
 ## Average daily activity pattern
 
 Time series plot of 5 minute intervals and average numbers of steps taken, averaged across all days.
 
-```{r Average daily activity patter, echo = TRUE, fig.height = 4, fig.width = 5}
 
+```r
    temp <- aggregate(data$steps ~ data$interval, FUN = mean)
  
    colnames(temp) <- c("interval", "avg_steps")
@@ -115,28 +121,27 @@ Time series plot of 5 minute intervals and average numbers of steps taken, avera
                 y =  "Average steps daily")+
           theme_classic() +
           geom_point(aes(x,y), cex = 5, color = "darkred")
-
-
 ```
 
-The red point on the chart indicates the max average steps on `r x` min intervals
+![plot of chunk Average daily activity patter](figure/Average daily activity patter-1.png)
+
+The red point on the chart indicates the max average steps on 835 min intervals
 
 ## Imputing missing values
 
-```{r Missing Variables, echo = TRUE}
 
+```r
 rows_with_NAs <- sum(!complete.cases(data))
-
 ```
 
-The data set has a total of `r rows_with_NAs` missing variables.
+The data set has a total of 2304 missing variables.
 
 These missing variables are replaced by the average number of steps taken in time interval across all days using the code below.
 
 A new dataset named data2 is created with all the missing values filled.
 
-```{r replacing missing varibles, echo = TRUE}
 
+```r
 daily_pattern <- data %>% 
                     group_by(interval) %>% 
                     summarise(average = mean(steps, na.rm = TRUE))
@@ -152,8 +157,8 @@ data2 <- transform(data,
 
 Below is a histogram of the total number of steps taken each day.
 
-```{r histogram of steps taken eachday, echo=TRUE, fig.show = 'hold', out.width = '48%'}
 
+```r
 data2 %>% 
   group_by(date) %>% 
   summarize(total_steps = sum(steps),
@@ -165,17 +170,26 @@ data2 %>%
                 x =  "Steps freqency",
                 y =  "Steps count")+
       theme_classic()
+```
 
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
 
- 
+```r
 ggplot(step_day, aes(steps)) +
    geom_histogram(fill = "darkred")+
    labs(title = "Plor 1; Total number of steps per day",
             y = "Count of steps",
             x = "Steps") +
    theme_classic()
+```
 
 ```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+<img src="figure/histogram of steps taken eachday-1.png" alt="plot of chunk histogram of steps taken eachday" width="48%" /><img src="figure/histogram of steps taken eachday-2.png" alt="plot of chunk histogram of steps taken eachday" width="48%" />
 
 Plot 2, on the left side shows the total number of steps after inputting the missing variables. whilst plot 1, on the right show the total number of steps per day with the missing the variables.
 
@@ -185,8 +199,8 @@ As you may see, imputting the missing variables has changed the outlook of the g
 
 Code below creates a new factor variable that indicates whether the day is a weekday or a weekend.
 
-```{r Week_day_end, echo = TRUE}
 
+```r
 days_table <- data.frame(day = c("Monday", "Tuesday", "Wednesday", 
                                   "Thursday", "Friday", "Saturday", "Sunday"),
                           mid_end = c("Weekday","Weekday","Weekday","Weekday","Weekday", 
@@ -199,14 +213,21 @@ day_end <- as.factor(days_table$mid_end[(match(data3$day, days_table$day))])
 data3 <- cbind(data3, day_end)
 
 kable(head(data3), format = "simple")
-
-
 ```
+
+     steps  date          interval  day      day_end 
+----------  -----------  ---------  -------  --------
+ 1.7169811  2012-10-01           0  Monday   Weekday 
+ 0.3396226  2012-10-01           5  Monday   Weekday 
+ 0.1320755  2012-10-01          10  Monday   Weekday 
+ 0.1509434  2012-10-01          15  Monday   Weekday 
+ 0.0754717  2012-10-01          20  Monday   Weekday 
+ 2.0943396  2012-10-01          25  Monday   Weekday 
 
 Panel plot of a time series plot of the 5 minute interval and average number of steps taken, averaged across all weekday days and weekend days.
 
-```{r time series plot, echo = TRUE, fig.width = 5}
 
+```r
 data3 %>% 
   group_by(day_end, interval) %>% 
   summarise(avg = mean(steps)) %>% 
@@ -214,10 +235,13 @@ data3 %>%
       geom_line()+
       labs( title =  "Time series plot",
                 x =  "5 minute interval",
-                y =  "Average number of stes")+
+                y =  "Average number of steps")+
       facet_wrap(.~ day_end, nrow = 2) +
       theme(panel.background = element_rect(fill='transparent'))
-
-
+```
 
 ```
+## `summarise()` has grouped output by 'day_end'. You can override using the `.groups` argument.
+```
+
+![plot of chunk time series plot](figure/time series plot-1.png)
