@@ -6,6 +6,13 @@ output:
   pdf_document: default
 ---
 
+```{r global_options}
+
+knitr::opts_chunk$set(fig.path='Figs/')
+
+```
+
+
 ```{r setup, include = FALSE}
 
 knitr::opts_chunk$set(echo = TRUE)
@@ -40,7 +47,7 @@ data <- transform(data, date = as.Date(data$date))
 
 The table below presents the total number of steps taken per each day First 5 rows of the table
 
-```{r steps_per_day, echo= FALSE }
+```{r steps_per_day, echo= FALSE , fig.show = 'hold'}
 
 step_day <-  data %>%  
                 group_by(date) %>% 
@@ -53,7 +60,7 @@ kable(head(step_day), format = "simple", table.attr = "style = 'width:50%;'")
 
 The histogram below presents the total number of steps taken on each day
 
-```{r histogram of steps per day,  echo = TRUE, fig.height = 4, fig.width = 5}
+```{r histogram of steps per day,  echo = TRUE, fig.height = 4, fig.width = 5, fig.show = 'hold'}
  
   ggplot(step_day, aes(steps)) +
      geom_histogram(fill = "darkred")+
@@ -63,9 +70,9 @@ The histogram below presents the total number of steps taken on each day
      theme_classic()
 ```
 
-The mean and median of the total number of steps taken per day
+The mean and median of the total number of steps taken per day.
 
-```{r mean, median, total number of steps, echo = TRUE}
+```{r mean, median, total number of steps, echo = TRUE, fig.show = 'hold'}
 
 table <- matrix(NA, ncol = 2, nrow =  2)
 
@@ -78,7 +85,7 @@ kable(table, format = "simple", table.attr = "style = 'width:50%;'")
 
 ```
 
-```{r}
+```{r fig.show = 'hold'}
 
  mean_median <-  data %>% 
                       group_by(date) %>% 
@@ -93,7 +100,7 @@ kable(table, format = "simple", table.attr = "style = 'width:50%;'")
 
 Time series plot of 5 minute intervals and average numbers of steps taken, averaged across all days.
 
-```{r Average daily activity patter, echo = TRUE, fig.height = 4, fig.width = 5}
+```{r Average daily activity patter, echo = TRUE, fig.height = 4, fig.width = 5, fig.show = 'hold'}
 
    temp <- aggregate(data$steps ~ data$interval, FUN = mean)
  
@@ -185,7 +192,7 @@ As you may see, imputting the missing variables has changed the outlook of the g
 
 Code below creates a new factor variable that indicates whether the day is a weekday or a weekend.
 
-```{r Week_day_end, echo = TRUE}
+```{r Week_day_end, echo = TRUE, fig.show = 'hold'}
 
 days_table <- data.frame(day = c("Monday", "Tuesday", "Wednesday", 
                                   "Thursday", "Friday", "Saturday", "Sunday"),
@@ -205,7 +212,7 @@ kable(head(data3), format = "simple")
 
 Panel plot of a time series plot of the 5 minute interval and average number of steps taken, averaged across all weekday days and weekend days.
 
-```{r time series plot, echo = TRUE, fig.width = 5}
+```{r time series plot, echo = TRUE, fig.width = 5, fig.show = 'hold'}
 
 data3 %>% 
   group_by(day_end, interval) %>% 

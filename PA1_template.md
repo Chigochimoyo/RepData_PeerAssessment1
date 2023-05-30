@@ -7,6 +7,12 @@ output:
 ---
 
 
+```r
+knitr::opts_chunk$set(fig.path='Figs/')
+```
+
+
+
 
 ## Loading and preprocessing the data
 
@@ -53,7 +59,7 @@ The histogram below presents the total number of steps taken on each day
 
 ![plot of chunk histogram of steps per day](Figs/histogram of steps per day-1.png)
 
-The mean and median of the total number of steps taken per day
+The mean and median of the total number of steps taken per day.
 
 
 ```r
